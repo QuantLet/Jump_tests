@@ -1,0 +1,13 @@
+Name of QuantLet : METIS_Jump_Processes
+
+Published in : 'To be published in METIS'
+
+Description : 'Tests whether a jump in a high frequency time series has happened by the methodology of Lee & Mykland (2012)'
+
+Keywords : Jumps, jump test, high frequency, time series
+
+See also : ''
+
+Author : Danial Florian Saef
+
+Submitted : November 6 2019 by Georg Keilbar
