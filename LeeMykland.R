@@ -3,7 +3,7 @@
 # R Translation of python code as found on
 # https://gist.github.com/linuskohl/690da335a34ebf1cfc5ab27973e16ee5
 
-library(data.table)
+if (!require(data.table)) install.packages("data.table")
 
 movmean <- function(v, kb, kf){
     # Computes the mean with a window of length kb+kf+1 that includes the element 
