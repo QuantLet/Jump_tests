@@ -1,4 +1,4 @@
-Name of QuantLet : Jump_tests
+Name of QuantLet : LeeMyklandJumpTest
 
 Published in : 'To be published in METIS'
 
