@@ -4,6 +4,7 @@
 # https://gist.github.com/linuskohl/690da335a34ebf1cfc5ab27973e16ee5
 
 if (!require(data.table)) install.packages("data.table")
+library(data.table)
 
 movmean <- function(v, kb, kf){
     # Computes the mean with a window of length kb+kf+1 that includes the element 
