@@ -1,6 +1,6 @@
 # October 03, 2019
 # By: Danial Saef
-# R Translation of python code as found on
+# R translation of Python code as found on
 # https://gist.github.com/linuskohl/690da335a34ebf1cfc5ab27973e16ee5
 
 if (!require(data.table)) install.packages("data.table")
