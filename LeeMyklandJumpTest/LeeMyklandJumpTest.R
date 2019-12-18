@@ -31,7 +31,7 @@ return(m)
 
 LeeMykland <- function(S, sampling, significance_level=0.01){
   
-    # "Jumps in Equilibrium Prices and Market Microstructure Noise"
+    # "Jumps in Financial Markets: A New Nonparametric Test and Jump Dynamics"
     # - by Suzanne S. Lee and Per A. Mykland
     # 
     # "https://galton.uchicago.edu/~mykland/paperlinks/LeeMykland-2535.pdf"
