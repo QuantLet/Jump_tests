@@ -138,7 +138,7 @@ A_n <- sqrt(2 * log(floor(n/k*M))) - (log(pi) + log ( log(floor(n/k*M)) ) / 2 * 
 B_n <- 1 / (sqrt(2 * log(floor(n/k*M))))
 
 # Define Xi_hat
-Xi_hat <- B_n^-1 * (abs(Chi_tj) - A_n)
+Xi_hat <- B_n * (abs(Chi_tj) - A_n)
 Xi_hat_max <- B_n^-1 * (max(abs(Chi_tj)) - A_n)
 
 # Jump threshold
@@ -155,7 +155,7 @@ res <- data.table("t" = DT_ts_p[,index][G_n_kM],
                   "Exp(P_hat_tj)" = exp(P_hat_tj))
 res[, L_t_j := L_tj]
 res[,'Chi_t_j' := sqrt(M) / sqrt(plim_Vn) * L_t_j]
-res[,'Xihat' := B_n^-1 * (abs(Chi_t_j) - A_n)/10]
+res[,'Xihat' := B_n * (abs(Chi_t_j) - A_n)]
 res[,'betastar' := -log(-log(1-significance_level))]
 res[,'Jump_indicator' := as.numeric(Xihat > betastar)]
 res[,'Jump_indicator' := Jump_indicator*sign(Chi_t_j)]
@@ -191,7 +191,7 @@ qgumbel <- function(p, mu, s){ # quantile function
   mu-s*log(-log(p))
 } 
 
-gumbel.fit <- fitdist(L_tj, "gumbel", start=list(mu=0.577, s=pi/sqrt(6)), method="mle", lower = c(0,0))
+gumbel.fit <- fitdist(Xi_hat, "gumbel", start=list(mu=0.577, s=pi/sqrt(6)), method="mle", lower = c(0,0))
 
 summary(gumbel.fit)
 
