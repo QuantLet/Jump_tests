@@ -1,0 +1,13 @@
+Name of QuantLet : LM_JumpTest_2012
+
+Published in : 'To be published in METIS'
+
+Description : 'R implementation to test whether a jump in a high frequency time series has happened by the methodology of "Jumps in equilibrium prices and market microstructure noise" (Lee & Mykland, 2012)‘
+
+Keywords : Jumps, jump test, high frequency, time series, Lee, Mykland, stochastic processes, cryptocurrencies, crypto
+
+See also : ''
+
+Author : Danial Florian Saef
+
+Submitted : December 18 2019 by Danial Saef
