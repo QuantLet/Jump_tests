@@ -359,6 +359,10 @@ DT_test_values <- rbindlist(list(DT_SJtemp, DT_SFAtemp, DT_SWtemp, DT_QVSplittem
 DT_test_values[test %in% "SJ", limit_jumps := 1]
 DT_test_values[test %in% "SFA", limit_finite := k^(p/2-1)]
 DT_test_values[test %in% "SW", limit := k^(1-p/2)]
+DT_test_values <- DT_test_values[!test_value == Inf]
+
+#
+test_names <- unique(DT_test_values$test)
 
 ## Limits for null hypotheses ##
 test_description <- array(data = NA, dim = c(2,1,5), dimnames = NULL)
@@ -375,25 +379,25 @@ test_description[[2,1,5]] <- " "
 ## ##
 
 ### Plots ###
-lapply(1:length(test_values), function(x){
+lapply(1:length(test_names), function(x){
   
-  dataset <- data.table(test_values[[x]])
+  dataset <- DT_test_values[test %in% test_names[[x]]]
   
-  bins <- min(500, grDevices::nclass.FD(na.exclude(dataset$V1)))
-  binwidth <- (max(dataset$V1, na.rm = TRUE) - min(dataset$V1, na.rm = TRUE))/bins
+  bins <- min(500, grDevices::nclass.FD(na.exclude(dataset$test_value)))
+  binwidth <- (max(dataset$test_value, na.rm = TRUE) - min(dataset$test_value, na.rm = TRUE))/bins
   
-  ggplot(dataset, aes(x=V1)) + 
+  ggplot(dataset, aes(x=test_value)) + 
     geom_histogram(aes(y=..density..),      # Histogram with density instead of count on y-axis
                  binwidth=binwidth,
                    colour="skyblue2", fill="skyblue2") +
     ts_theme +
     theme(panel.background = element_rect(fill = "transparent"), # bg of the panel
           plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
-          panel.grid.major = element_blank(), # get rid of major grid
-          panel.grid.minor = element_blank(), # get rid of minor grid
           legend.background = element_rect(fill = "transparent"), # get rid of legend bg
           legend.box.background = element_rect(fill = "transparent")) + # get rid of legend panel bg
     labs(x = "Test values", y = "Density", title = paste(test_description[[1,1,x]]), subtitle = paste(test_description[[2,1,x]]))
 })
+
+
 
 
