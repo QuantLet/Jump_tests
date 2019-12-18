@@ -1,0 +1,13 @@
+Name of QuantLet : LM_JumpTest_2008
+
+Published in : 'To be published in METIS'
+
+Description : 'R port of Python code to test whether a jump in a high frequency time series has happened by the methodology of Lee & Mykland (2008)'
+
+Keywords : Jumps, jump test, high frequency, time series, Lee, Mykland, stochastic processes, cryptocurrencies, crypto
+
+See also : ''
+
+Author : Danial Florian Saef
+
+Submitted : November 6 2019 by Danial Saef
