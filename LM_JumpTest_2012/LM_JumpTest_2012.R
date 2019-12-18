@@ -161,20 +161,19 @@ res[,'Jump_indicator' := as.numeric(Xihat > betastar)]
 res[,'Jump_indicator' := Jump_indicator*sign(Chi_t_j)]
 
 ## plot ##
-# ggplot(data = res[count >= 12000 & count <= 45000], aes(x = t, y = `Exp(P_hat_tj)`)) +
-ggplot(data = res, aes(x = t, y = `Exp(P_hat_tj)`)) +
-  geom_point(col = "#00BFC4") + 
-  geom_vline(xintercept = res[Jump_indicator<0]$t, col = "red") +
-  geom_vline(xintercept = res[Jump_indicator>0]$t, col = "green") +
+ggplot(data = res[count >= 23000 & count <= 50000], aes(x = t, y = `Exp(P_hat_tj)`)) +
+# ggplot(data = res, aes(x = t, y = `Exp(P_hat_tj)`)) +
+  geom_point(col = "#F8766D") + 
+  geom_line(col = "#F8766D") + 
+  geom_vline(xintercept = res[Jump_indicator<0]$t, col = "black") +
+  geom_vline(xintercept = res[Jump_indicator>0]$t, col = "black") +
   ts_theme +
   theme(panel.background = element_rect(fill = "transparent"), # bg of the panel
         plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
-        panel.grid.major = element_blank(), # get rid of major grid
-        panel.grid.minor = element_blank(), # get rid of minor grid
         legend.background = element_rect(fill = "transparent"), # get rid of legend bg
         legend.box.background = element_rect(fill = "transparent"))+
    theme(legend.position  = "none") +
-  labs(x = "Timestamp", y = "BTC/USD", title = "BTC / USD on May 17, 2019")
+  labs(x = "Timestamp", y = "BTC/USD", title = "BTC / USD on April 11, 2019")
 
 ## ##
 
