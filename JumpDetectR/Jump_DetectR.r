@@ -222,10 +222,12 @@ AJ_JumpTest <- function(DATA){
 dX <- tmp_DT[, log_ret]# both X and dX have length n
   x0 <- log(tmp_DT[,p][1]) # initial value
   
+  # set T (if cryptocurrency exchange data, set T = 1/365.25 for 1 day, if on normal exchange data set T = 1/252 for one day, T = 1 for one year
   T <- 1/365.25
   n <- length(dX)
   
-   if(n < 86400/5) {deltavec <- deltavec[2:length(deltavec)]}
+  # If frequency is less than 5 / 10 seconds, only consider according deltas, if less than 15 seconds -> data is not "high frequency" (although this is an arbitrary threshold)
+  if(n < 86400/5) {deltavec <- deltavec[2:length(deltavec)]}
   if(n < 86400/10) {deltavec <- deltavec[3:length(deltavec)]}
   if(n < 86400/15) {return(data.table(date = character(),
                                       id = character(),
@@ -244,19 +246,20 @@ dX <- tmp_DT[, log_ret]# both X and dX have length n
                                       SJ = numeric()
                                       ))}
   
-  
+  # preallocate grid with all possible parameter combinations
   par_grid <- setDT(expand.grid("p" = pvec,
                                 "a" = atruncvec,
                                 "gamma" = gammavec,
                                 "delta" = deltavec,
                                 "k" = kvec))
-  
+  # compute nblag_j & delta_j
   par_grid[, nblag_j := delta/sort(unique(par_grid$delta)[1])]
   par_grid[, delta_j := delta/(6.5*60*60*365.25)]
   
+  # preallocate all possible nblagj to consider on X
   N_nblagj <- sort(unique(par_grid$nblag_j))
   
-  
+  # for all nblagj, calculate sigma_hat and store it in par_grid
   for (i in seq_along(N_nblagj)){
     X <- x0 + cumsum(dX) # do this instead of X=log(price) to avoid including the large overnight returns
     nblagj <- unique(par_grid[nblag_j %in% sort(unique(par_grid$nblag_j))[i]]$nblag_j)
@@ -266,10 +269,14 @@ dX <- tmp_DT[, log_ret]# both X and dX have length n
     par_grid[nblag_j %in% nblagj, sigmahat := sigma_hat]
   }
   
+  # calculate nblag_jk and the according threshold for each parameter combination
   par_grid[, nblag_jk := nblag_j*k]
   par_grid[, thresh := gamma * a * sigmahat * sqrt(delta_j)]
+  
+  # preallocate all possible nblagjk to consider on X
   N_nblagjk <- sort(unique(par_grid$nblag_jk))
   
+  # compute dXobsjk for all nblagjk
   list_dXobsjk <- lapply(seq_along(N_nblagjk), function(i){
     nblagjk <- unique(par_grid[nblag_jk %in% sort(unique(par_grid$nblag_jk))[i]]$nblag_jk)
     deltaj <-  unique(par_grid[nblag_jk %in% sort(unique(par_grid$nblag_jk))[i]]$delta_j)
@@ -277,28 +284,33 @@ dX <- tmp_DT[, log_ret]# both X and dX have length n
     sort(abs(X[seq(from = (nblagjk+1), to = n, by = nblagjk)] - X[seq(from = 1, to = (n-nblagjk), by = nblagjk)]))
   })
   
+  # preallocate result list
   result_list <- vector(mode="list", length = length(N_nblagjk))
   
+  # calculate B values quickly:  https://stackoverflow.com/questions/59617633/most-efficient-way-to-calculate-function-with-large-number-of-parameter-combinat
   for (i in seq_along(list_dXobsjk)){
-    sa_dX_i <- list_dXobsjk[[i]]
+    sa_dX_i <- list_dXobsjk[[i]] # temp dXobsjk
     
+    # subset par_grid to only include parameter combinations for nblagjk
     par_grid_tmp <- par_grid[nblag_jk %in% N_nblagjk[i]]
     
-    test1 <- rep(NA, nrow(par_grid_tmp))
-    loc <- findInterval(par_grid_tmp$thresh, sa_dX_i)
+    test1 <- rep(NA, nrow(par_grid_tmp)) # prellocate result vector
+    loc <- findInterval(par_grid_tmp$thresh, sa_dX_i) # find location of last value smaller than threshold 'thresh'
     loc[loc == 0] <- NA  # Handle threshold smaller than everything in dX_i
     
+    # calculate B for every unique 'p'
     for (pval in unique(par_grid_tmp$p)) {
       this.p <- par_grid_tmp$p == pval
       cs_dX_i_p <- cumsum(sa_dX_i^pval)
       test1[this.p] <- cs_dX_i_p[loc[this.p]]
     }
-    test1[is.na(test1)] <- 0 
+    test1[is.na(test1)] <- 0 # Handle threshold smaller than everything in dX_i
     
     par_grid_tmp[,B := test1]
     result_list[[i]] <- par_grid_tmp
   }
   
+  # cal
   pvec_SJ <- pvec[which( (pvec >= 2.5 & pvec <= 6) )]
   deltavec_SJ <- deltavec[which(deltavec <= 120)]
   kvec_SJ <- kvec[which(kvec >= 2)]
@@ -344,7 +356,7 @@ progress <- round(quantile(1:length(DT_split), probs = seq(0,1,0.05)))
 
 ## transform tick data files to regularly spaced return series w.r.t. number of observations##
 #
-delts <- c(1, 5, 10, 15, 20, 45, 60, 120, 300)
+delts <- c(1, 5, 10, 15, 20, 45, 60, 120, 300) # frequencies for testing 
 #
 
 DT_split <- lapply(1:length(DT_split), function(x) {
@@ -372,7 +384,7 @@ DT_split <- DT_split[which(lapply(DT_split,function(x) nrow(x) > 0) == TRUE)] # 
 progress <- round(quantile(1:length(DT_split), probs = seq(0,1,0.05)))
 ##
 
-##
+## Lee / Mykland Jump Test ##
 LM_result <- rbindlist(lapply(1:length(DT_split), function(x) {
   if (x %in% progress) {print(Sys.time()); print(progress[which(progress == x)])}
   LM_JumpTest(DT_split[[x]])
@@ -380,7 +392,7 @@ LM_result <- rbindlist(lapply(1:length(DT_split), function(x) {
 )
 ## 
 
-##
+## Ait-Sahalia / Jacod Jump Test ##
 AJ_result <- rbindlist(lapply(1:length(DT_split), function(x) {
   if (x %in% progress) {print(Sys.time()); print(progress[which(progress == x)])}
   AJ_JumpTest(DT_split[[x]])
