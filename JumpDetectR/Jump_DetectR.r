@@ -310,7 +310,7 @@ dX <- tmp_DT[, log_ret]# both X and dX have length n
     result_list[[i]] <- par_grid_tmp
   }
   
-  # cal
+  # calculate test statistic SJ / other test statistics SFA / SW / QV can be obtained by calculating according B_upper / B_lower values (See AJ_Spectrogram)
   pvec_SJ <- pvec[which( (pvec >= 2.5 & pvec <= 6) )]
   deltavec_SJ <- deltavec[which(deltavec <= 120)]
   kvec_SJ <- kvec[which(kvec >= 2)]
