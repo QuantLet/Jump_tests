@@ -167,8 +167,8 @@ LM_JumpTest <-function(DATA){
   
   # specify parameters 
   k_jac <- 2 # choose from: 1:3
-  p <- 3  # choose from: seq(from = 0, to = 6, by = 0.25)
-  gamma <- 2 # choose from: seq(from = 1, to = 3, by = 0.25)
+  p <- 4  # choose from: seq(from = 0, to = 6, by = 0.25)
+  gamma <- 1 # choose from: seq(from = 1, to = 3, by = 0.25)
   atrunc <- 20 # choose from: c(2:20, 25, 30, 40, 50, 60, 75, 100, 10^10)
   
   nblagjk <- nblagj * k_jac
