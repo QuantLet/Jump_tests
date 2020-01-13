@@ -169,10 +169,10 @@ LM_JumpTest <-function(DATA){
   k_jac <- 2 # choose from: 1:3
   p <- 4  # choose from: seq(from = 0, to = 6, by = 0.25)
   gamma <- 1 # choose from: seq(from = 1, to = 3, by = 0.25)
-  atrunc <- 20 # choose from: c(2:20, 25, 30, 40, 50, 60, 75, 100, 10^10)
+  atrunc <- 10^10 # choose from: c(2:20, 25, 30, 40, 50, 60, 75, 100, 10^10)
   
   nblagjk <- nblagj * k_jac
-  dXobsjk <- X[seq(from = (nblagjk+1), to = n, by = nblagjk)] - X[seq(from = 1, to = (n-nblagjk), by = nblagjk)]
+  dXobsjk <- sort(abs(X[seq(from = (nblagjk+1), to = n, by = nblagjk)] - X[seq(from = 1, to = (n-nblagjk), by = nblagjk)]))
   
   sigma_hat_trunc <- sum( (abs(dXobsjk)^p) * ( abs(dXobsjk) < gamma * atrunc * sigmahat * deltaj^(1/2) ))
   ## ##
