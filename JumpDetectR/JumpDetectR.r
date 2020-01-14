@@ -325,7 +325,7 @@ DT_SJ <- data.table("date" =  tmp_DT[,date][1],
                           "id" =  tmp_DT[,id][1],
                           "s" =  tmp_DT[,s][1],
                           SJ)
-  return(SJ)
+  return(DT_SJ)
 }
 
 
