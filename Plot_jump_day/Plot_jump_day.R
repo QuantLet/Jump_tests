@@ -12,9 +12,18 @@ Sys.setlocale("LC_TIME", "en_US.UTF-8") # set timestamp language to English
 DT_subs <- fread("bitstamp_may17_btcusd.csv")
 ## ##
 
+##
+plot_theme <- theme(panel.border = element_blank(), panel.background = element_blank(),
+                  axis.text = element_text(size = 14, face = "bold"),
+                  axis.title = element_text(size = 24, face = "bold"),
+                  strip.text = element_text(size = 14, face = "bold"),
+                  plot.title = element_text(size = 24, face = "bold", hjust = .5)
+)
+##
+
 ### plot it ###
 ggplot(data = DT_subs, mapping = aes(y = p, x = t, group = Symbol, colour = Symbol)) +
-  geom_line() +
+  geom_line(size = 2, col = "steelblue") +
   plot_theme +
   labs(x = "Time", y = "Exchange rate [USD]" ,
        title = paste("BTC exchange rate (USD) / observed during",
@@ -26,6 +35,8 @@ ggplot(data = DT_subs, mapping = aes(y = p, x = t, group = Symbol, colour = Symb
   theme(legend.position = "none",
         panel.background = element_rect(fill = "transparent"), # bg of the panel
         plot.background = element_rect(fill = "transparent", color = NA), # bg of the plot
+        panel.grid.major = element_blank(), # get rid of major grid
+        panel.grid.minor = element_blank(), # get rid of minor grid
         legend.background = element_rect(fill = "transparent"), # get rid of legend bg
         legend.box.background = element_rect(fill = "transparent"), # get rid of legend panel bg
         plot.margin = margin(10, 10, 10, 85)
